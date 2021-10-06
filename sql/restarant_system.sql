@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 26, 2021 at 09:31 AM
+-- Generation Time: Oct 06, 2021 at 01:04 PM
 -- Server version: 10.4.17-MariaDB
 -- PHP Version: 8.0.2
 
@@ -98,26 +98,34 @@ INSERT INTO `members` (`id`, `id_member`, `first_name`, `last_name`, `status`) V
 
 CREATE TABLE `menus` (
   `id` int(11) NOT NULL,
+  `menu_image` varchar(200) NOT NULL,
   `menu_code` varchar(30) NOT NULL,
   `food_menu` varchar(100) NOT NULL,
   `food_type` enum('FULLMEALFASTFOOD','SNACKFASTFOOD','REFRESHMENTS') NOT NULL,
   `price` int(11) NOT NULL,
-  `status` enum('1','2') NOT NULL
+  `status` enum('ACTIVE','DISABLE') NOT NULL,
+  `is_delete` char(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `menus`
 --
 
-INSERT INTO `menus` (`id`, `menu_code`, `food_menu`, `food_type`, `price`, `status`) VALUES
-(1, 'M001', 'พิซซ่าหน้าแซลมอนรมควัน', 'FULLMEALFASTFOOD', 30, '1'),
-(2, 'M002', 'เป๊ปซี่ 200 ml.', 'REFRESHMENTS', 20, '1'),
-(3, 'M003', 'โค้ก', 'REFRESHMENTS', 20, '1'),
-(4, 'M003', 'นักเก็ต', 'FULLMEALFASTFOOD', 30, '1'),
-(5, 'M005', 'ไก่ทอด', 'REFRESHMENTS', 40, '1'),
-(6, 'ggg', 'gg', 'SNACKFASTFOOD', 20, '1'),
-(7, 'gg', 'ปิ้งไก่', 'SNACKFASTFOOD', 50, '1'),
-(8, 'gg', 'gg', 'REFRESHMENTS', 52, '1');
+INSERT INTO `menus` (`id`, `menu_image`, `menu_code`, `food_menu`, `food_type`, `price`, `status`, `is_delete`) VALUES
+(1, 'berries-2277_640.jpg', 'M001', 'พิซซ่าหน้าแซลมอนรมควัน', 'FULLMEALFASTFOOD', 30, 'ACTIVE', 'Y'),
+(2, 'pepsi-5152332_1920.jpg', 'M002', 'เป๊ปซี่ 200 ml.', 'REFRESHMENTS', 20, 'ACTIVE', 'N'),
+(3, 'coca-cola-6090176_640.jpg', 'M003', 'โค้ก', 'REFRESHMENTS', 20, 'ACTIVE', 'N'),
+(4, 'panipuri-74974_640.jpg', 'M003', 'นักเก็ต', 'FULLMEALFASTFOOD', 30, 'ACTIVE', 'N'),
+(5, 'fried-chicken-690039_640.jpg', 'M005', 'ไก่ทอด', 'REFRESHMENTS', 40, 'ACTIVE', 'N'),
+(6, 'abstract-1238657_640.jpg', 'ggg', 'gg', 'SNACKFASTFOOD', 20, 'ACTIVE', 'N'),
+(7, 'churros-2188871_640.jpg', 'gg', 'ปิ้งไก่', 'SNACKFASTFOOD', 50, 'ACTIVE', 'N'),
+(8, 'pizza-2000614_640.jpg', 'gg', 'gg', 'REFRESHMENTS', 52, 'ACTIVE', 'N'),
+(9, 'bowl-1842294_640.jpg', '123', 'เฟรนฟาย', 'REFRESHMENTS', 29, 'ACTIVE', 'N'),
+(10, 'fast-food-2132863_640.jpg', 'ggggg', 'gg', 'REFRESHMENTS', 0, 'ACTIVE', 'N'),
+(11, 'berries-2277_640.jpg', 'gg', 'gg', 'REFRESHMENTS', 0, 'ACTIVE', 'N'),
+(12, '', 'gg', 'gg', 'FULLMEALFASTFOOD', 50, 'ACTIVE', 'N'),
+(13, '', 'gg', 'gg', 'REFRESHMENTS', 50, 'ACTIVE', 'N'),
+(14, 'hamburger-1238246_640.jpg', 'M006', 'แฮมเบอร์เกอร์', 'REFRESHMENTS', 120, 'ACTIVE', 'N');
 
 -- --------------------------------------------------------
 
@@ -183,8 +191,20 @@ INSERT INTO `qr_codes` (`id`, `qr_code_no`, `web_site`) VALUES
 CREATE TABLE `receipts` (
   `id` int(11) NOT NULL,
   `receipt_no` varchar(100) NOT NULL,
-  `status` enum('','','','') NOT NULL
+  `visitor_id` int(11) NOT NULL,
+  `total_price` int(11) NOT NULL,
+  `create_at` date DEFAULT NULL,
+  `status` enum('PAYED','NOTPAID') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `receipts`
+--
+
+INSERT INTO `receipts` (`id`, `receipt_no`, `visitor_id`, `total_price`, `create_at`, `status`) VALUES
+(1, 'R00000001', 1, 500, '2021-10-04', 'NOTPAID'),
+(2, 'R00000002', 2, 230, '2021-10-01', 'NOTPAID'),
+(3, 'R00000003', 3, 410, '2021-10-07', 'NOTPAID');
 
 -- --------------------------------------------------------
 
@@ -204,8 +224,8 @@ CREATE TABLE `receipt_details` (
 --
 
 INSERT INTO `receipt_details` (`id`, `receipt_id`, `order_id`, `date_issue_receipt`) VALUES
-(1, 'P000', 0, '2021-09-08 02:15:41'),
-(2, 'P001', 2, '2021-09-08 02:15:41');
+(1, '1', 1, '2021-09-08 02:15:41'),
+(2, '1', 2, '2021-09-08 02:15:41');
 
 -- --------------------------------------------------------
 
@@ -260,7 +280,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `first_name`, `last_name`, `user_role_id`) VALUES
-(1, 'admin', '$2y$10$AG.ltxsSn6jfR1wveS7jreu9eWIz.qou9sBjA3OLa3FWUnKKg/5Ta', 'ซอฟเเวร์', 'เอนจีเนีย', 1);
+(1, 'admin', '$2y$10$AG.ltxsSn6jfR1wveS7jreu9eWIz.qou9sBjA3OLa3FWUnKKg/5Ta', 'ซอฟเเวร์', 'เอนจีเนีย', 1),
+(2, 'table_1', '$2y$10$AG.ltxsSn6jfR1wveS7jreu9eWIz.qou9sBjA3OLa3FWUnKKg/5Ta', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -284,8 +305,24 @@ CREATE TABLE `visitors` (
 --
 
 INSERT INTO `visitors` (`id`, `visitor_no`, `card_id`, `table_id`, `number_of_people`, `status`, `date_check_in`, `date_check_out`) VALUES
-(0, 'V001', 0, 1, 5, 'CHECKIN', '2021-09-08 02:04:55', '0000-00-00 00:00:00'),
-(0, 'V002', 1, 2, 3, 'CHECKIN', '2021-09-08 02:09:15', '0000-00-00 00:00:00');
+(1, 'V001', 0, 1, 5, 'CHECKIN', '2021-09-08 02:04:55', '0000-00-00 00:00:00'),
+(2, 'V002', 1, 2, 3, 'CHECKIN', '2021-09-08 02:09:15', '0000-00-00 00:00:00'),
+(3, 'V00000000000', 0, 0, 4, 'CHECKIN', '2021-10-05 00:13:06', '0000-00-00 00:00:00'),
+(4, 'V00000000000', 0, 2, 2, 'CHECKIN', '2021-10-05 00:16:57', '0000-00-00 00:00:00'),
+(5, 'V00000000000', 0, 3, 6, 'CHECKIN', '2021-10-05 00:17:44', '0000-00-00 00:00:00'),
+(6, '00000000006', 0, 2, 1, 'CHECKIN', '2021-10-05 00:18:52', '0000-00-00 00:00:00'),
+(7, 'V00000000007', 0, 1, 3, 'CHECKIN', '2021-10-05 00:19:38', '0000-00-00 00:00:00'),
+(8, 'V00000000008', 0, 1, 3, 'CHECKIN', '2021-10-05 00:57:46', '0000-00-00 00:00:00'),
+(9, 'V00000000009', 0, 1, 2, 'CHECKIN', '2021-10-05 00:58:22', '0000-00-00 00:00:00'),
+(10, 'V00000000010', 0, 1, 2, 'CHECKIN', '2021-10-05 00:59:05', '0000-00-00 00:00:00'),
+(11, 'V00000000011', 0, 1, 2, 'CHECKIN', '2021-10-05 01:07:57', '0000-00-00 00:00:00'),
+(12, 'V00000000012', 0, 1, 2, 'CHECKIN', '2021-10-05 01:10:20', '0000-00-00 00:00:00'),
+(13, 'V00000000013', 0, 1, 2, 'CHECKIN', '2021-10-05 01:12:16', '0000-00-00 00:00:00'),
+(14, 'V00000000014', 0, 1, 2, 'CHECKIN', '2021-10-05 01:27:28', '0000-00-00 00:00:00'),
+(15, 'V00000000015', 0, 1, 1, 'CHECKIN', '2021-10-05 01:28:18', '0000-00-00 00:00:00'),
+(16, 'V00000000016', 0, 3, 4, 'CHECKIN', '2021-10-05 01:29:54', '0000-00-00 00:00:00'),
+(17, 'V00000000017', 0, 1, 2, 'CHECKIN', '2021-10-05 01:38:01', '0000-00-00 00:00:00'),
+(18, 'V00000000018', 0, 1, 2, 'CHECKIN', '2021-10-05 01:38:51', '0000-00-00 00:00:00');
 
 --
 -- Indexes for dumped tables
@@ -373,6 +410,12 @@ ALTER TABLE `users`
   ADD KEY `user_name` (`username`);
 
 --
+-- Indexes for table `visitors`
+--
+ALTER TABLE `visitors`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -404,7 +447,7 @@ ALTER TABLE `members`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -428,7 +471,7 @@ ALTER TABLE `qr_codes`
 -- AUTO_INCREMENT for table `receipts`
 --
 ALTER TABLE `receipts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `receipt_details`
@@ -446,7 +489,13 @@ ALTER TABLE `tables`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `visitors`
+--
+ALTER TABLE `visitors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
